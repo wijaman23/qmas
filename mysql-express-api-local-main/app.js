@@ -1,10 +1,12 @@
 require("dotenv").config();
 const express = require("express");
+const session = require('express-session');
 const app = express();
 const createError = require("http-errors");
 const logger = require("morgan");
 const dotenv = require("dotenv");
 const cors = require('cors')
+
 
 dotenv.config();
 
@@ -18,13 +20,18 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(session({
+	secret: 'secret',
+	resave: true,
+	saveUninitialized: true
+}));
+
 app.use(express.json());
 app.use(cors())
 app.use( express.urlencoded({ extended: true, }));
 app.use(logger("dev"));
 
 const routes = require("./config/routes.config");
-// console.log(routes)
 app.use("/", routes);
 
 app.listen(process.env.PORT||3300, () => {

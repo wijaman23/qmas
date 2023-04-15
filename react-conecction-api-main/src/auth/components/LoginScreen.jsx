@@ -25,18 +25,20 @@ function LoginScreen() {
   const handleLogin = (data) => {
     userService
         .login(data)
-        .then((data) => {
-            navigation("/mensajes");
-        })
-        .catch((error) => {
-            if (error.response?.data?.errors) {
-            const { errors } = error.response.data;
-            console.log(errors);
-            Object.keys(error.response.data.errors).forEach((error) => {
-                setError(error, { message: errors[error].message });
-            });
-            }
-        });
+          .then((data) => {
+              value.setUser(data);
+              navigation("/");
+              console.log(data)
+          })
+          .catch((error) => {
+              if (error.response?.data?.errors) {
+              const { errors } = error.response.data;
+              console.log(errors);
+              Object.keys(error.response.data.errors).forEach((error) => {
+                  setError(error, { message: errors[error].message });
+              });
+              }
+          });
   };
 
   return (

@@ -41,5 +41,5 @@ export const getUsers = () => {
  }
 
  export const login = (data) => { 
-  return http.post(`/auth/login`, data)
+  return http.post(`/auth`, data)
  }

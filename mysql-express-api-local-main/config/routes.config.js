@@ -1,15 +1,10 @@
 const express = require("express");
 const router = express.Router();
 
-const user = require("../controllers/user.controller");
 const mensaje = require("../controllers/mensaje.controller");
+const LoginController = require("../controllers/login.controller");
 
-router.get('/', user.home); 
-router.get('/users', user.list);
-router.post('/users', user.addUser);
-router.delete('/users/:id', user.deleteUser);
-
-router.post("/auth/login", user.login);
+router.post('/auth', LoginController.auth);
 
 router.get('/mensajes', mensaje.mensajes);
 router.get('/mensajesDone', mensaje.mensajesDone);
