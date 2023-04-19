@@ -1,6 +1,34 @@
 import React from 'react'
+import { useNavigate } from "react-router";
+import { useForm } from "react-hook-form";
+import {logout} from '../../services/services-api'
+import Cookies from 'universal-cookie';
 
 function Header() {
+  const navigation = useNavigate();
+  const cookies = new Cookies()
+
+  const nameCookie = cookies.get('userName')
+  
+  const handleLogout = () => {
+    logout()
+        .then(() => {
+            cookies.remove('userName')
+            navigation("/auth/login");
+          })
+        .catch((error) => console.error(error));
+  };
+
+  const { handleSubmit } = useForm({ mode: "onTouched" });
+
+  function showButton(nameCookie) {
+    if (nameCookie){
+      return "nav-link active mx-5" 
+    } else {
+      return "nav-link disabled mx-5"
+    }
+  }
+
   return (
     <>
         <nav className="navbar navbar-expand-lg bg-body-tertiary" style={{background: "#e3f2fd"}}>
@@ -12,7 +40,7 @@ function Header() {
             <div className="collapse navbar-collapse">
               <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                 <li className="nav-item me-5">
-                  <a className="nav-link active mx-5" aria-current="page" href="http://localhost:5173/"><i className="fa fa-home fa-2x" aria-hidden="true"></i></a>
+                  <a className={showButton(nameCookie)} aria-current="page" href="http://localhost:5173/"><i className="fa fa-home fa-2x" aria-hidden="true"></i></a>
                 </li>
                 <li className="nav-item me-5">
                 </li>
@@ -48,6 +76,11 @@ function Header() {
                 </li>
               </ul>
             </div>
+              <form onSubmit={handleSubmit(handleLogout)}>
+                    <button className="btn btn-light" type="submit">
+                      Cerrar Sesion
+                    </button>
+              </form>
           </div>
         </nav>
     </>

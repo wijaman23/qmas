@@ -1,5 +1,7 @@
 const { connection } = require('../config/db.config')
 const createError = require("http-errors");
+const jwt = require ('jsonwebtoken')
+
 
 module.exports.auth = (req, res, next) => {
     const { user, password } = req.body;
@@ -12,9 +14,9 @@ module.exports.auth = (req, res, next) => {
             })
         );
     }
-  
+
     connection.query('select * from usuarios where user = ?', [ user ], (error, results) => {
-        if (error) {
+          if (error) {
             res.status(500).json({ error: 'Internal server error' });
           } else if (results.length === 0) {
             res.status(401).json({ error: 'Invalid username or password' });
@@ -22,9 +24,16 @@ module.exports.auth = (req, res, next) => {
           } else {
             const userName = results[0];
             if (userName.password === password){
-                req.session.loggedin = true;
-				req.session.user = user;
-                console.log(req.session)
+                const token = jwt.sign({id: userName.id_usuario}, "jwtkey")
+                const {password, ...other} = userName
+
+                res
+                .cookie("access_token", token, {
+                  httpOnly: true,
+                })
+                .status(200)
+                .json(other);
+            
             } else {
                 res.status(401).json({ error: 'Invalid username or password' });
                 invalidAuthError()
@@ -32,3 +41,9 @@ module.exports.auth = (req, res, next) => {
           }
     })
 }
+
+module.exports.logout = (req, res, next) => {
+    req.session.destroy();
+    req.session = null;
+    res.status(204).send();
+  };

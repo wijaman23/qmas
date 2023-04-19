@@ -43,3 +43,7 @@ export const getUsers = () => {
  export const login = (data) => { 
   return http.post(`/auth`, data)
  }
+
+ export function logout() {
+  return http.delete("/logout");
+}

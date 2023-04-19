@@ -1,13 +1,16 @@
-import { createContext, useState } from "react";
+import { createContext, useState  } from 'react';
 
 export const AuthContext = createContext();
 
 function AuthContextProvider({ children }) {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
 
+
+  console.log("Entroooo")
+
   function login(user) {
     setUser(user);
-    localStorage.setItem("user", JSON.stringify(user));
+    setLoading(false)
   }
 
   const value = {

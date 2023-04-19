@@ -5,15 +5,19 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
+import * as userService from '../../services/services-api'
 import { AuthContext } from "../contexts/AuthContext";
 import { useState } from "react";
 import { FaEyeSlash, FaRegEye } from "react-icons/fa";
-import * as userService from '../../services/services-api'
+import Cookies from 'universal-cookie';
+
 
 function LoginScreen() {
   const navigation = useNavigate();
   const value = useContext(AuthContext);
   const [showPwd, setshowPwd] = useState(false);
+
+  const cookies = new Cookies()
 
   const {
     register,
@@ -23,12 +27,14 @@ function LoginScreen() {
   } = useForm({ mode: "onTouched" });
 
   const handleLogin = (data) => {
+
     userService
         .login(data)
           .then((data) => {
-              value.setUser(data);
-              navigation("/");
-              console.log(data)
+            console.log(data)
+            console.log(data.data.id_usuario)
+            cookies.set('userName', data.data.name, {path: '/'})
+            window.location.href='/mensajes'
           })
           .catch((error) => {
               if (error.response?.data?.errors) {

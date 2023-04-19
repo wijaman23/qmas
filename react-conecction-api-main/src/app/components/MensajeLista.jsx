@@ -4,6 +4,7 @@ import * as mensajesService from '../../services/services-api'
 import React from 'react'
 import DataTable from 'react-data-table-component'
 import styled from 'styled-components'
+import Cookies from 'universal-cookie';
 
 function timeFormat(time) {
   let dayNew;
@@ -76,6 +77,7 @@ export const MensajeLista = () => {
   const [filterText, setFilterText] = useState('')
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false)
   const [reload, setReload] = useState(false);
+  const cookies = new Cookies()
   
   useEffect(() => {
     mensajesService
@@ -87,10 +89,10 @@ export const MensajeLista = () => {
   function handleReadMessage(id, state) {
     if (state == "No leido" || state == "Leido"){
       mensajesService
-      .changeStateMessage(id)
-      .then(() => {
-        setReload(!reload);
-      })
+        .changeStateMessage(id)
+          .then(() => {
+           setReload(!reload);
+          })
     } 
   }
 
@@ -234,6 +236,11 @@ export const MensajeLista = () => {
     <>
       <div className='ms-5 mt-5'>
         <h1>QMAS</h1>
+      </div>
+      <div>
+        <h3>
+            Mensaje: {cookies.get('userName')}
+          </h3>
       </div>
       <div>
       <fieldset className='mx-5 mt-3'>
